@@ -1,6 +1,6 @@
 # Golf Launch Monitor Emulator
 
-Node server and single-page frontend that emulates a golf launch monitor and sends ball-flight data via GSPro Open Connector socket on the same computer running the server. Front-end is accessable via any device on local network by going to `lm-emulator.local`
+Node server and single-page frontend that emulates a golf launch monitor and sends ball-flight data via GSPro Open Connector socket on the same computer running the server. Front-end is accessable via any device on local network by going to `lm-emulator.local` in a browser.
 
 Designed for testing golf simulators without needing physical hardware. Provides club selection, shot shape, power, ball speed, spin rate, spin axis, launch angles, and carry distance estimate in the browser using a basic aerodynamic physics model.
 
