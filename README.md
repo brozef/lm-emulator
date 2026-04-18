@@ -47,7 +47,7 @@ The estimated carry distance updates live as you drag the slider.
 All club parameters live in the `CLUBS` array near the top of the `<script>` block. Each entry has:
 
 ```js
-{ cat, name, loft, vla, ball_speed, spin_rpm, spin_axis }
+{ cat, abv, name, loft, vla, ball_speed, spin_rpm, spin_axis }
 ```
 
 `ball_speed` is in km/h at 100% power. `spin_rpm` is positive for backspin. `spin_axis` for a straight shot should always be `0`. Carry distances in the club list are recalculated automatically from whatever values you set.

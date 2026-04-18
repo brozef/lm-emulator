@@ -7,6 +7,9 @@ const multicastDns = require('multicast-dns');
 let connected = false;
 let client = null;
 let connectedWarn = false;
+let buffer = '';
+let braceCount = 0;
+let club = 'DR';
 
 function initSocket() {
     if (client != null) {
@@ -20,8 +23,29 @@ function initSocket() {
     });
 
     client.on('data', (data) => {
-        //todo: sim club data
-        //todo: responses success/failure
+        const dataStr = data.toString();
+        buffer += dataStr;
+        for (const char of dataStr) {
+            if (char === '{') {
+                braceCount++;
+            }
+            else if (char === '}') {
+                braceCount--;
+            }
+        };
+       
+        if (braceCount === 0) {
+            try {
+                const json = JSON.parse(buffer);
+                if (json.Code == 201) {
+                    //club info
+                    club = json.Player.Club;
+                }
+            } catch(err) {
+                console.error('Failed to parse JSON:', err.message);
+            }
+            buffer = '';
+        }
     });
 
     client.on('end', () => {
@@ -102,7 +126,7 @@ const requestListener = async function (req, res) {
                 client.write(JSON.stringify(readyData));
 
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end();
+                res.end(club); // send current selected club in sim to frontend
             }
             else if (req.url === '/shot') {
                 if (!connected) {
