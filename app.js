@@ -1,10 +1,12 @@
 const http = require('http');
 const net = require('net');
 const fs = require('fs');
+const multicastDns = require('multicast-dns');
 
 //state
 let connected = false;
 let client = null;
+let connectedWarn = false;
 
 function initSocket() {
     if (client != null) {
@@ -14,9 +16,12 @@ function initSocket() {
     client = net.createConnection({ port: 921, host: '127.0.0.1' }, () => {
         console.log('Connected to Sim!');
         connected = true;
+        connectedWarn = false;
     });
 
     client.on('data', (data) => {
+        //todo: sim club data
+        //todo: responses success/failure
     });
 
     client.on('end', () => {
@@ -25,7 +30,10 @@ function initSocket() {
     });
 
     client.on('error', function(e) {
-        console.log('Sim not found');
+        if (!connectedWarn) {
+            console.log('Sim not found');
+            connectedWarn = true;
+        }
         connected = false;
     });
 }
@@ -73,6 +81,25 @@ const requestListener = async function (req, res) {
                     res.end("Simulator not connected");
                     return;
                 }
+
+                //use pings as ready indicators
+                const readyData = {
+                    "DeviceID":"LMEmulator",
+                    "Units":"Metres",
+                    "ShotNumber":-1,
+                    "APIversion":"1",
+                    "BallData":{},
+                    "ClubData":{},
+                    "ShotDataOptions":{
+                        "ContainsBallData":false,
+                        "ContainsClubData":false,
+                        "LaunchMonitorIsReady":true,
+                        "LaunchMonitorBallDetected":true,
+                        "IsHeartBeat":false
+                    }
+                }
+
+                client.write(JSON.stringify(readyData));
 
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
                 res.end();
@@ -134,4 +161,70 @@ initSocket();
 const httpServer = http.createServer(requestListener);
 httpServer.listen(3000, () => {
     console.log(`HTTP listening on port: 3000`);
+    startMdns('lm-emulator', 3000);
 });
+
+function startMdns(hostname, port) {
+  const mdns = multicastDns();
+
+  mdns.on('query', (query) => {
+    for (const question of query.questions) {
+      // Respond to A record queries for our hostname
+      if (question.name === `${hostname}.local` && question.type === 'A') {
+        mdns.respond({
+          answers: [
+            {
+              name: `${hostname}.local`,
+              type: 'A',
+              ttl: 300,
+              data: getLocalIp(),
+            },
+          ],
+        });
+      }
+
+      // Respond to SRV/PTR queries (for service discovery)
+      if (question.type === 'PTR' && question.name === '_http._tcp.local') {
+        mdns.respond({
+          answers: [
+            {
+              name: '_http._tcp.local',
+              type: 'PTR',
+              ttl: 300,
+              data: `${hostname}._http._tcp.local`,
+            },
+            {
+              name: `${hostname}._http._tcp.local`,
+              type: 'SRV',
+              ttl: 300,
+              data: { port, target: `${hostname}.local`, weight: 0, priority: 0 },
+            },
+            {
+              name: `${hostname}.local`,
+              type: 'A',
+              ttl: 300,
+              data: getLocalIp(),
+            },
+          ],
+        });
+      }
+    }
+  });
+
+  console.log(`mDNS: advertising http://${hostname}.local:${port}`);
+  return mdns;
+}
+
+function getLocalIp() {
+  const { networkInterfaces } = require('os');
+  const nets = networkInterfaces();
+
+  for (const iface of Object.values(nets)) {
+    for (const addr of iface) {
+      if (addr.family === 'IPv4' && !addr.internal) {
+        return addr.address;
+      }
+    }
+  }
+  return '127.0.0.1';
+}
