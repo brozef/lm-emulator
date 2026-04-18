@@ -1,1 +1,1 @@
-{ "main": "app.js", "output": "lmemulator.exe" }
+{ "main": "bundle.js", "output": "lmemulator.exe", "assets": { "index.html": "index.html" }}
