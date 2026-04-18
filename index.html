@@ -690,23 +690,23 @@
 <script>
 // ── CLUB DATA ────────────────────────────────────────────────────────────────
 const CLUBS = [
-  { cat:'Woods',   abv:'DR', name:'Driver',   loft:10.5, vla:10, ball_speed:268, spin_rpm: 2700, spin_axis:0 },
-  { cat:'Woods',   abv:'3W', name:'3 Wood',   loft:15,   vla:11, ball_speed:248, spin_rpm: 3500, spin_axis:0 },
-  { cat:'Woods',   abv:'5W', name:'5 Wood',   loft:18,   vla:13, ball_speed:235, spin_rpm: 4200, spin_axis:0 },
-  { cat:'Hybrids', abv:'3H', name:'3 Hybrid', loft:19,   vla:14, ball_speed:225, spin_rpm: 4500, spin_axis:0 },
-  { cat:'Hybrids', abv:'4H', name:'4 Hybrid', loft:22,   vla:16, ball_speed:214, spin_rpm: 5000, spin_axis:0 },
-  { cat:'Irons',   abv:'3I', name:'3 Iron',   loft:21,   vla:15, ball_speed:220, spin_rpm: 4800, spin_axis:0 },
-  { cat:'Irons',   abv:'4I', name:'4 Iron',   loft:24,   vla:17, ball_speed:209, spin_rpm: 5200, spin_axis:0 },
-  { cat:'Irons',   abv:'5I', name:'5 Iron',   loft:27,   vla:19, ball_speed:196, spin_rpm: 5800, spin_axis:0 },
-  { cat:'Irons',   abv:'6I', name:'6 Iron',   loft:30,   vla:21, ball_speed:184, spin_rpm: 6400, spin_axis:0 },
-  { cat:'Irons',   abv:'7I', name:'7 Iron',   loft:34,   vla:23, ball_speed:169, spin_rpm: 7100, spin_axis:0 },
-  { cat:'Irons',   abv:'8I', name:'8 Iron',   loft:38,   vla:26, ball_speed:156, spin_rpm: 7800, spin_axis:0 },
-  { cat:'Irons',   abv:'9I', name:'9 Iron',   loft:42,   vla:29, ball_speed:143, spin_rpm: 8500, spin_axis:0 },
-  { cat:'Wedges',  abv:'PW', name:'PW',       loft:46,   vla:31, ball_speed:132, spin_rpm: 9200, spin_axis:0 },
-  { cat:'Wedges',  abv:'GW', name:'GW (50°)', loft:50,   vla:33, ball_speed:121, spin_rpm: 9800, spin_axis:0 },
+  { cat:'Woods',   abv:'DR', name:'Driver',   loft:10.5, vla:10, ball_speed:260, spin_rpm: 2700, spin_axis:0 },
+  { cat:'Woods',   abv:'3W', name:'3 Wood',   loft:15,   vla:11, ball_speed:240, spin_rpm: 3500, spin_axis:0 },
+  { cat:'Woods',   abv:'5W', name:'5 Wood',   loft:18,   vla:13, ball_speed:230, spin_rpm: 4200, spin_axis:0 },
+  { cat:'Hybrids', abv:'3H', name:'3 Hybrid', loft:19,   vla:14, ball_speed:220, spin_rpm: 4500, spin_axis:0 },
+  { cat:'Hybrids', abv:'4H', name:'4 Hybrid', loft:22,   vla:16, ball_speed:215, spin_rpm: 5000, spin_axis:0 },
+  { cat:'Irons',   abv:'3I', name:'3 Iron',   loft:21,   vla:15, ball_speed:210, spin_rpm: 4800, spin_axis:0 },
+  { cat:'Irons',   abv:'4I', name:'4 Iron',   loft:24,   vla:17, ball_speed:205, spin_rpm: 5200, spin_axis:0 },
+  { cat:'Irons',   abv:'5I', name:'5 Iron',   loft:27,   vla:19, ball_speed:195, spin_rpm: 5800, spin_axis:0 },
+  { cat:'Irons',   abv:'6I', name:'6 Iron',   loft:30,   vla:21, ball_speed:185, spin_rpm: 6400, spin_axis:0 },
+  { cat:'Irons',   abv:'7I', name:'7 Iron',   loft:34,   vla:23, ball_speed:170, spin_rpm: 7100, spin_axis:0 },
+  { cat:'Irons',   abv:'8I', name:'8 Iron',   loft:38,   vla:26, ball_speed:155, spin_rpm: 7800, spin_axis:0 },
+  { cat:'Irons',   abv:'9I', name:'9 Iron',   loft:42,   vla:29, ball_speed:140, spin_rpm: 8500, spin_axis:0 },
+  { cat:'Wedges',  abv:'PW', name:'PW',       loft:46,   vla:31, ball_speed:130, spin_rpm: 9200, spin_axis:0 },
+  { cat:'Wedges',  abv:'GW', name:'GW (50°)', loft:50,   vla:33, ball_speed:120, spin_rpm: 9800, spin_axis:0 },
   { cat:'Wedges',  abv:'SW', name:'SW (54°)', loft:54,   vla:36, ball_speed:110, spin_rpm:10400, spin_axis:0 },
-  { cat:'Wedges',  abv:'LW', name:'LW (60°)', loft:60,   vla:40, ball_speed: 93, spin_rpm:11400, spin_axis:0 },
-  { cat:'Putter',  abv:'PT', name:'Putter',   loft:4,    vla: 2, ball_speed: 16, spin_rpm: -400, spin_axis:0 },
+  { cat:'Wedges',  abv:'LW', name:'LW (60°)', loft:60,   vla:40, ball_speed: 95, spin_rpm:11400, spin_axis:0 },
+  { cat:'Putter',  abv:'PT', name:'Putter',   loft:4,    vla: 2, ball_speed: 20, spin_rpm: 100, spin_axis:0 },
 ];
 
 // Per shot-type modifiers applied to a club's base values:
@@ -966,6 +966,7 @@ async function ping() {
         if (clubIdx > -1 && clubIdx != lastPingClub && selectedClub.abv !== body) {
           selectClub(club);
         }
+        lastPingClub = clubIdx;
       }
 
       if (!lastPingStatus) {
